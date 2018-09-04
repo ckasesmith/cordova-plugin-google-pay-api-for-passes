@@ -22,6 +22,6 @@
         </feature>
       </config-file>
 
-      <source-file src="src/GooglePay.java" target-dir="src/org/apache/cordova/plugin" />
+      <source-file src="src/android/GooglePay.java" target-dir="src/org/apache/cordova/plugin" />
     </platform>
 </plugin>
