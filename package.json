@@ -1,0 +1,19 @@
+{
+  "name": "cordova-plugin-google-pay-api-for-passes",
+  "version": "1.0.0",
+  "description": "Cordova Plugin Google Pay API for Passes",
+  "cordova": {
+    "id": "cordova-plugin-google-pay-api-for-passes",
+    "platforms": [
+      "android"
+    ]
+  },
+  "keywords": [
+    "cordova",
+    "googlepay",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "author": "",
+  "license": "MIT"
+}
