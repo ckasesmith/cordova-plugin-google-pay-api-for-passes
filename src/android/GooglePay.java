@@ -1,4 +1,4 @@
-package io.cordova.hellocordova;
+package org.apache.cordova.plugin;
 
 import android.app.Activity;
 import android.content.Intent;
