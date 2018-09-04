@@ -71,9 +71,9 @@ public class GooglePay extends CordovaPlugin {
                     .setEnvironment(WalletConstants.ENVIRONMENT_PRODUCTION)
                     .build();
 
-            WalletObjectsClient walletObjectsClient = Wallet.getWalletObjectsClient(this, walletOptions);
+            WalletObjectsClient walletObjectsClient = Wallet.getWalletObjectsClient(this.cordova.getActivity(), walletOptions);
             Task<AutoResolvableVoidResult> task = walletObjectsClient.createWalletObjects(request);
-            AutoResolveHelper.resolveTask(task, this, SAVE_TO_ANDROID);
+            AutoResolveHelper.resolveTask(task, this.cordova.getActivity(), SAVE_TO_ANDROID);
             return true;
         }
         return false;
