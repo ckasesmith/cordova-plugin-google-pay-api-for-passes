@@ -86,7 +86,7 @@ public class GooglePay extends CordovaPlugin {
         mAccountName = object.optString("accountName");
         mIssuerName = object.optString("issuerName");
         mProgramName = object.optString("programName");
-
+        Toast.makeText(activity,mIssuerId + "-"+mLoyaltyClassId+"-"+mLoyaltyObjectId+"-"+mAccountId+"-"+mAccountName+"-"+mIssuerName+"-"+mProgramName,Toast.LENGTH_LONG).show();
         LoyaltyWalletObject wob = generateLoyaltyWalletObject();
         CreateWalletObjectsRequest request = new CreateWalletObjectsRequest(wob);
         Wallet.WalletOptions walletOptions = new Wallet.WalletOptions.Builder()
