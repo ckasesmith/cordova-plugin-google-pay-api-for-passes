@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.google.android.gms.wallet.WalletConstants;
 
 import org.apache.cordova.CordovaActivity;
+import org.json.JSONArray;
 import org.json.JSONException;
 
 public class GooglePayActivity extends CordovaActivity {
@@ -15,7 +16,8 @@ public class GooglePayActivity extends CordovaActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            GooglePay.getInstance().setSaveToAndroid(this);
+            JSONArray array = new JSONArray(getIntent().getStringExtra(this.getClass().getName()));
+            GooglePay.getInstance().setSaveToAndroid(this, array);
         } catch (JSONException e) {
             GooglePay.getInstance().getCallbackContext().error("ERROR CODE: " + e.getLocalizedMessage());
         }

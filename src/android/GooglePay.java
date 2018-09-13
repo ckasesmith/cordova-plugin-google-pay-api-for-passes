@@ -36,7 +36,6 @@ public class GooglePay extends CordovaPlugin {
     private String mAccountName = "";
     private String mIssuerName = "";
     private String mProgramName = "";
-    private static JSONArray mArray;
     private static CallbackContext mCallbackContext;
 
     private volatile static GooglePay uniqueInstance;
@@ -75,8 +74,8 @@ public class GooglePay extends CordovaPlugin {
         return wob;
     }
 
-    public void setSaveToAndroid(CordovaActivity activity) throws JSONException {
-        JSONObject object = mArray.getJSONObject(0);
+    public void setSaveToAndroid(CordovaActivity activity, JSONArray args) throws JSONException {
+        JSONObject object = args.getJSONObject(0);
 
         mIssuerId = object.getString("issuerId");
         mLoyaltyClassId = object.optString("loyaltyClassId");
@@ -103,8 +102,8 @@ public class GooglePay extends CordovaPlugin {
         if ("saveToGooglePay".equals(action)) {
 
             mCallbackContext = callbackContext;
-            mArray = args;
             Intent intent = new Intent(cordova.getActivity(), GooglePayActivity.class);
+            intent.putExtra(GooglePayActivity.class.getName(),args.toString());
             cordova.getActivity().startActivity(intent);
             return true;
         }
