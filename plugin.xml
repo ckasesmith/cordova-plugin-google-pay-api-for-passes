@@ -19,9 +19,11 @@
                 <param name="onload" value="true" />
             </feature>
       </config-file>    
+      <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" android:name="org.apache.cordova.plugin.GooglePayActivity" />
+      </config-file>
       <framework src="src/android/build.gradle" custom="true" type="gradleReference"/>
       <source-file src="src/android/GooglePay.java" target-dir="src/org/apache/cordova/plugin" />
       <source-file src="src/android/GooglePayActivity.java" target-dir="src/org/apache/cordova/plugin" />
-      <activity android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" android:name="org.apache.cordova.plugin.GooglePayActivity" />
     </platform>
 </plugin>
