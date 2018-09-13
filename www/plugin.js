@@ -13,7 +13,6 @@ var GooglePay = {
     args.accountName = accountName;
     args.issuerName = issuerName;
     args.programName = programName;
-    
     exec(successCallback, errorCallback, PLUGIN_NAME, 'saveToGooglePay', [args]);
   },
 };

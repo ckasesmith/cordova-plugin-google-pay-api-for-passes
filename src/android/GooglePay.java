@@ -2,11 +2,14 @@ package org.apache.cordova.plugin;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.widget.Toast;
 
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaActivity;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,78 +28,86 @@ public class GooglePay extends CordovaPlugin {
 
     private static final int SAVE_TO_ANDROID = 888;
 
-    private String ISSUER_ID;
-    private String LOYALTY_CLASS_ID;
-    private String LOYALTY_OBJECT_ID;
+    private String mIssuerId;
+    private String mLoyaltyClassId;
+    private String mLoyaltyObjectId;
 
     private String mAccountId = "";
     private String mAccountName = "";
     private String mIssuerName = "";
     private String mProgramName = "";
+    private static JSONArray mArray;
+    private static CallbackContext mCallbackContext;
 
-    private CallbackContext mCallbackContext;
+    private volatile static GooglePay uniqueInstance;
+
+    public GooglePay() {
+    }
+
+    public static GooglePay getInstance() {
+        if (uniqueInstance == null) {
+            synchronized (GooglePay.class) {
+                if (uniqueInstance == null) {
+                    uniqueInstance = new GooglePay();
+                }
+            }
+        }
+        return uniqueInstance;
+    }
+
+    public CallbackContext getCallbackContext() {
+        return mCallbackContext;
+    }
 
     private LoyaltyWalletObject generateLoyaltyWalletObject() {
         LoyaltyWalletObject wob = LoyaltyWalletObject.newBuilder()
-                .setClassId(ISSUER_ID + "." + LOYALTY_CLASS_ID)
-                .setId(ISSUER_ID + "." + LOYALTY_OBJECT_ID)
+                .setClassId(mIssuerId + "." + mLoyaltyClassId)
+                .setId(mIssuerId + "." + mLoyaltyObjectId)
                 .setState(WalletObjectsConstants.State.ACTIVE)
                 .setAccountId(mAccountId)
                 .setAccountName(mAccountName)
+                .setBarcodeValue("code128")
+                .setBarcodeValue(mAccountId)
+                .setBarcodeAlternateText(mAccountId)
                 .setIssuerName(mIssuerName)
                 .setProgramName(mProgramName)
                 .build();
         return wob;
     }
 
+    public void setSaveToAndroid(CordovaActivity activity) throws JSONException {
+        JSONObject object = mArray.getJSONObject(0);
+
+        mIssuerId = object.getString("issuerId");
+        mLoyaltyClassId = object.optString("loyaltyClassId");
+        mLoyaltyObjectId = object.optString("loyaltyObjectId");
+
+        mAccountId = object.optString("accountId");
+        mAccountName = object.optString("accountName");
+        mIssuerName = object.optString("issuerName");
+        mProgramName = object.optString("programName");
+
+        LoyaltyWalletObject wob = generateLoyaltyWalletObject();
+        CreateWalletObjectsRequest request = new CreateWalletObjectsRequest(wob);
+        Wallet.WalletOptions walletOptions = new Wallet.WalletOptions.Builder()
+                .setTheme(WalletConstants.THEME_LIGHT)
+                .setEnvironment(WalletConstants.ENVIRONMENT_PRODUCTION)
+                .build();
+        WalletObjectsClient walletObjectsClient = Wallet.getWalletObjectsClient(activity, walletOptions);
+        Task<AutoResolvableVoidResult> task = walletObjectsClient.createWalletObjects(request);
+        AutoResolveHelper.resolveTask(task, activity, SAVE_TO_ANDROID);
+    }
+
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if ("saveToGooglePay".equals(action)) {
 
-            this.mCallbackContext = callbackContext;
-
-            ISSUER_ID = args.optString(0);
-            LOYALTY_CLASS_ID = args.optString(1);
-            LOYALTY_OBJECT_ID = args.optString(2);
-
-            mAccountId = args.optString(3);
-            mAccountName = args.optString(4);
-            mIssuerName = args.optString(5);
-            mProgramName = args.optString(6);
-
-            LoyaltyWalletObject wob = generateLoyaltyWalletObject();
-            CreateWalletObjectsRequest request = new CreateWalletObjectsRequest(wob);
-            Wallet.WalletOptions walletOptions = new Wallet.WalletOptions.Builder()
-                    .setTheme(WalletConstants.THEME_DARK)
-                    .setEnvironment(WalletConstants.ENVIRONMENT_PRODUCTION)
-                    .build();
-
-            WalletObjectsClient walletObjectsClient = Wallet.getWalletObjectsClient(this.cordova.getActivity(), walletOptions);
-            Task<AutoResolvableVoidResult> task = walletObjectsClient.createWalletObjects(request);
-            AutoResolveHelper.resolveTask(task, this.cordova.getActivity(), SAVE_TO_ANDROID);
+            mCallbackContext = callbackContext;
+            mArray = args;
+            Intent intent = new Intent(cordova.getActivity(), GooglePayActivity.class);
+            cordova.getActivity().startActivity(intent);
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        switch (requestCode) {
-            case SAVE_TO_ANDROID:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        mCallbackContext.success("SUCCESS");
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        mCallbackContext.error("CANCELED");
-                        break;
-                    default:
-                        int errorCode =
-                                intent.getIntExtra(
-                                        WalletConstants.EXTRA_ERROR_CODE, -1);
-                        mCallbackContext.error("ERROR CODE: " + errorCode);
-                        break;
-                }
-        }
     }
 }
