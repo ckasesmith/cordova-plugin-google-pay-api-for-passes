@@ -2,6 +2,7 @@ package org.apache.cordova.plugin;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.apache.cordova.CallbackContext;
@@ -85,7 +86,12 @@ public class GooglePay extends CordovaPlugin {
         mAccountName = object.optString("accountName");
         mIssuerName = object.optString("issuerName");
         mProgramName = object.optString("programName");
-        Toast.makeText(activity,mIssuerId + "-"+mLoyaltyClassId+"-"+mLoyaltyObjectId+"-"+mAccountId+"-"+mAccountName+"-"+mIssuerName+"-"+mProgramName,Toast.LENGTH_LONG).show();
+        
+        Log.d("GooglePay","IssuerId: " + mIssuerId);
+        Log.d("GooglePay","LoyaltyClassId: " + mLoyaltyClassId);
+        Log.d("GooglePay","IssuerName: " + mIssuerName);
+        Log.d("GooglePay","ProgramName: " + mProgramName);
+        
         LoyaltyWalletObject wob = generateLoyaltyWalletObject();
         CreateWalletObjectsRequest request = new CreateWalletObjectsRequest(wob);
         Wallet.WalletOptions walletOptions = new Wallet.WalletOptions.Builder()
