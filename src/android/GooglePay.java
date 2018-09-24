@@ -72,10 +72,6 @@ public class GooglePay extends CordovaPlugin {
                 .setIssuerName(mIssuerName)
                 .setProgramName(mProgramName)
                 .build();
-        Log.d("GooglePay","setClassId: " + mIssuerId + "." + mLoyaltyClassId);
-        Log.d("GooglePay","setId: " + mIssuerId + "." + mLoyaltyObjectId);
-        Log.d("GooglePay","IssuerName: " + mIssuerName);
-        Log.d("GooglePay","ProgramName: " + mProgramName);
         return wob;
     }
 
