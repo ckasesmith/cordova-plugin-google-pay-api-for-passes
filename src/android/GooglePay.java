@@ -66,12 +66,16 @@ public class GooglePay extends CordovaPlugin {
                 .setState(WalletObjectsConstants.State.ACTIVE)
                 .setAccountId(mAccountId)
                 .setAccountName(mAccountName)
-                .setBarcodeValue("code128")
+                .setBarcodeType("code128")
                 .setBarcodeValue(mAccountId)
                 .setBarcodeAlternateText(mAccountId)
                 .setIssuerName(mIssuerName)
                 .setProgramName(mProgramName)
                 .build();
+        Log.d("GooglePay","setClassId: " + mIssuerId + "." + mLoyaltyClassId);
+        Log.d("GooglePay","setId: " + mIssuerId + "." + mLoyaltyObjectId);
+        Log.d("GooglePay","IssuerName: " + mIssuerName);
+        Log.d("GooglePay","ProgramName: " + mProgramName);
         return wob;
     }
 
@@ -86,11 +90,6 @@ public class GooglePay extends CordovaPlugin {
         mAccountName = object.optString("accountName");
         mIssuerName = object.optString("issuerName");
         mProgramName = object.optString("programName");
-        
-        Log.d("GooglePay","IssuerId: " + mIssuerId);
-        Log.d("GooglePay","LoyaltyClassId: " + mLoyaltyClassId);
-        Log.d("GooglePay","IssuerName: " + mIssuerName);
-        Log.d("GooglePay","ProgramName: " + mProgramName);
         
         LoyaltyWalletObject wob = generateLoyaltyWalletObject();
         CreateWalletObjectsRequest request = new CreateWalletObjectsRequest(wob);
