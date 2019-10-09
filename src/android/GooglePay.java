@@ -37,8 +37,8 @@ public class GooglePay extends CordovaPlugin {
     private String mAccountName = "";
     private String mIssuerName = "";
     private String mProgramName = "";
-    private bolean mIsProduction;
-    private bolean mBarcode = "";
+    private boolean mIsProduction;
+    private String mBarcode = "";
 
     private static CallbackContext mCallbackContext;
 
