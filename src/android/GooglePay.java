@@ -38,6 +38,8 @@ public class GooglePay extends CordovaPlugin {
     private String mIssuerName = "";
     private String mProgramName = "";
     private bolean mIsProduction;
+    private bolean mBarcode = "";
+
     private static CallbackContext mCallbackContext;
 
     private volatile static GooglePay uniqueInstance;
@@ -68,8 +70,8 @@ public class GooglePay extends CordovaPlugin {
                 .setAccountId(mAccountId)
                 .setAccountName(mAccountName)
                 .setBarcodeType("code128")
-                .setBarcodeValue(mAccountId)
-                .setBarcodeAlternateText(mAccountId)
+                .setBarcodeValue(mBarcode)
+                .setBarcodeAlternateText(mBarcode)
                 .setIssuerName(mIssuerName)
                 .setProgramName(mProgramName)
                 .build();
@@ -88,7 +90,8 @@ public class GooglePay extends CordovaPlugin {
         mIssuerName = object.optString("issuerName");
         mProgramName = object.optString("programName");
         mIsProduction = object.optBoolean("isProduction");
-        
+        mBarcode = object.optString("barcode");
+
         LoyaltyWalletObject wob = generateLoyaltyWalletObject();
         CreateWalletObjectsRequest request = new CreateWalletObjectsRequest(wob);
         Wallet.WalletOptions walletOptions = new Wallet.WalletOptions.Builder()
