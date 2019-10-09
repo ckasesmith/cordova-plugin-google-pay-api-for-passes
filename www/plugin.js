@@ -14,7 +14,7 @@ var GooglePay = {
     args.issuerName = issuerName;
     args.programName = programName;
     args.isProduction = isProduction;
-    args.isProduction = barcode;
+    args.barcode = barcode;
 
     exec(successCallback, errorCallback, PLUGIN_NAME, 'saveToGooglePay', [args]);
   },
