@@ -4,7 +4,7 @@ var exec = require('cordova/exec');
 var PLUGIN_NAME = 'GooglePay';
 
 var GooglePay = {
-  saveToGooglePay: function(successCallback, errorCallback, issuerId, loyaltyClassId, loyaltyObjectId, accountId, accountName, issuerName, programName, isProduction) {
+  saveToGooglePay: function(successCallback, errorCallback, issuerId, loyaltyClassId, loyaltyObjectId, accountId, accountName, issuerName, programName, isProduction, barcode) {
     var args = {};
     args.issuerId = issuerId;
     args.loyaltyClassId = loyaltyClassId;
@@ -14,6 +14,7 @@ var GooglePay = {
     args.issuerName = issuerName;
     args.programName = programName;
     args.isProduction = isProduction;
+    args.isProduction = barcode;
 
     exec(successCallback, errorCallback, PLUGIN_NAME, 'saveToGooglePay', [args]);
   },
