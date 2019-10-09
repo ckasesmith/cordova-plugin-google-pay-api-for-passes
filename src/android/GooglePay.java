@@ -37,6 +37,7 @@ public class GooglePay extends CordovaPlugin {
     private String mAccountName = "";
     private String mIssuerName = "";
     private String mProgramName = "";
+    private bolean mIsProduction;
     private static CallbackContext mCallbackContext;
 
     private volatile static GooglePay uniqueInstance;
@@ -86,12 +87,13 @@ public class GooglePay extends CordovaPlugin {
         mAccountName = object.optString("accountName");
         mIssuerName = object.optString("issuerName");
         mProgramName = object.optString("programName");
+        mIsProduction = object.optBoolean("isProduction");
         
         LoyaltyWalletObject wob = generateLoyaltyWalletObject();
         CreateWalletObjectsRequest request = new CreateWalletObjectsRequest(wob);
         Wallet.WalletOptions walletOptions = new Wallet.WalletOptions.Builder()
                 .setTheme(WalletConstants.THEME_LIGHT)
-                .setEnvironment(WalletConstants.ENVIRONMENT_TEST)
+                .setEnvironment(mIsProduction ? WalletConstants.ENVIRONMENT_PRODUCTION : WalletConstants.ENVIRONMENT_TEST)
                 .build();
         WalletObjectsClient walletObjectsClient = Wallet.getWalletObjectsClient(activity, walletOptions);
         Task<AutoResolvableVoidResult> task = walletObjectsClient.createWalletObjects(request);
