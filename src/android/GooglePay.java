@@ -1,9 +1,18 @@
 package org.apache.cordova.plugin;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
+
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.wallet.AutoResolvableVoidResult;
+import com.google.android.gms.wallet.AutoResolveHelper;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wallet.CreateWalletObjectsRequest;
+import com.google.android.gms.wallet.LoyaltyWalletObject;
+import com.google.android.gms.wallet.Wallet;
+import com.google.android.gms.wallet.WalletConstants;
+import com.google.android.gms.wallet.WalletObjectsClient;
+import com.google.android.gms.wallet.wobs.WalletObjectsConstants;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaActivity;
@@ -12,22 +21,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.wallet.AutoResolvableVoidResult;
-import com.google.android.gms.wallet.AutoResolveHelper;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.wallet.CreateWalletObjectsRequest;
-import com.google.android.gms.wallet.LoyaltyWalletObject;
-import com.google.android.gms.wallet.Wallet;
-import com.google.android.gms.wallet.WalletConstants;
-import com.google.android.gms.wallet.WalletObjectsClient;
-import com.google.android.gms.wallet.wobs.WalletObjectsConstants;
-
 public class GooglePay extends CordovaPlugin {
 
     private static final int SAVE_TO_ANDROID = 888;
+    public static final Scope WOB =
+            new Scope("https://www.googleapis.com/auth/wallet_object.issuer");
 
     private String mIssuerId;
     private String mLoyaltyClassId;
@@ -69,7 +67,7 @@ public class GooglePay extends CordovaPlugin {
                 .setState(WalletObjectsConstants.State.ACTIVE)
                 .setAccountId(mAccountId)
                 .setAccountName(mAccountName)
-                .setBarcodeType("code128")
+                .setBarcodeType("qrCode")
                 .setBarcodeValue(mBarcode)
                 .setBarcodeAlternateText(mBarcode)
                 .setIssuerName(mIssuerName)
@@ -93,7 +91,10 @@ public class GooglePay extends CordovaPlugin {
         mBarcode = object.optString("barcode");
 
         LoyaltyWalletObject wob = generateLoyaltyWalletObject();
-        CreateWalletObjectsRequest request = new CreateWalletObjectsRequest(wob);
+        CreateWalletObjectsRequest request = CreateWalletObjectsRequest
+                .newBuilder()
+                .setLoyaltyWalletObject(wob)
+                .build(); //new CreateWalletObjectsRequest(wob);
         Wallet.WalletOptions walletOptions = new Wallet.WalletOptions.Builder()
                 .setTheme(WalletConstants.THEME_LIGHT)
                 .setEnvironment(mIsProduction ? WalletConstants.ENVIRONMENT_PRODUCTION : WalletConstants.ENVIRONMENT_TEST)
@@ -106,7 +107,6 @@ public class GooglePay extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if ("saveToGooglePay".equals(action)) {
-
             mCallbackContext = callbackContext;
             Intent intent = new Intent(cordova.getActivity(), GooglePayActivity.class);
             intent.putExtra(GooglePayActivity.class.getName(),args.toString());
