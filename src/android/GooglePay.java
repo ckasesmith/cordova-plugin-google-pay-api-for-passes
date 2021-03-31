@@ -112,6 +112,14 @@ public class GooglePay extends CordovaPlugin {
             intent.putExtra(GooglePayActivity.class.getName(),args.toString());
             cordova.getActivity().startActivity(intent);
             return true;
+        }else if("saveJWT".equals(action)){
+            JSONObject object = args.getJSONObject(0);
+            String url = ""+object.getString("jwt");
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse( url ));
+            cordova.getActivity().startActivity( i );
+			callbackContext.success();
+            return true;
         }
         return false;
     }
