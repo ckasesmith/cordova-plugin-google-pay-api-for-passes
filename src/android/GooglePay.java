@@ -1,6 +1,7 @@
 package org.apache.cordova.plugin;
 
 import android.content.Intent;
+import android.net.Uri;
 
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
@@ -13,7 +14,7 @@ import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
 import com.google.android.gms.wallet.WalletObjectsClient;
 import com.google.android.gms.wallet.wobs.WalletObjectsConstants;
-
+import com.google.android.gms.wallet.wobs.*;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaActivity;
 import org.apache.cordova.CordovaPlugin;
@@ -114,11 +115,11 @@ public class GooglePay extends CordovaPlugin {
             return true;
         }else if("saveJWT".equals(action)){
             JSONObject object = args.getJSONObject(0);
-            String url = ""+object.getString("jwt");
+            String url = "https://pay.google.com/gp/v/save/"+object.getString("jwt");
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse( url ));
             cordova.getActivity().startActivity( i );
-	    callbackContext.success();
+            callbackContext.success();
             return true;
         }
         return false;
