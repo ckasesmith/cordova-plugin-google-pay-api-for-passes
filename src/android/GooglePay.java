@@ -118,7 +118,7 @@ public class GooglePay extends CordovaPlugin {
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse( url ));
             cordova.getActivity().startActivity( i );
-			callbackContext.success();
+	    callbackContext.success();
             return true;
         }
         return false;
